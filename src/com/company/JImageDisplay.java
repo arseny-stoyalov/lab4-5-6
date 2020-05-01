@@ -38,13 +38,6 @@ public class JImageDisplay extends JComponent {
         }
     }
 
-    /**
-     * Sets color to a certain pixel
-     */
-    public void drawPixel(int x, int y, int rgbColor) {
-        image.setRGB(x, y, rgbColor);
-    }
-
     public BufferedImage getImage() {
         return image;
     }

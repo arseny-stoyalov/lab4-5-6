@@ -37,6 +37,10 @@ public class FractalExplorer {
 
     private JFrame frame;
 
+    private JButton btnSave, btnReset;
+
+    private JComboBox<FractalGenerator> comboBox;
+
     public FractalExplorer(int displaySize) {
         this.displaySize = displaySize;
         this.generator = new MandelbrotGenerator();
@@ -54,12 +58,12 @@ public class FractalExplorer {
 
         JPanel top = new JPanel();
         JLabel lblFractal = new JLabel("Fractal:");
-        JComboBox<FractalGenerator> comboBox = new JComboBox<>();
+        comboBox = new JComboBox<>();
         top.add(lblFractal);
         top.add(comboBox);
         JPanel bottom = new JPanel();
-        JButton btnReset = new JButton("Reset display");
-        JButton btnSave = new JButton("Save image");
+        btnReset = new JButton("Reset display");
+        btnSave = new JButton("Save image");
         bottom.add(btnSave);
         bottom.add(btnReset);
         display = new JImageDisplay(displaySize, displaySize);
@@ -93,8 +97,58 @@ public class FractalExplorer {
         drawFractal();
     }
 
+    private void enableUI(boolean v) {
+        frame.setEnabled(v);
+        btnReset.setEnabled(v);
+        btnSave.setEnabled(v);
+        comboBox.setEnabled(v);
+    }
+
     /**
-     * Event listener responsible for
+     * Makes fractals generate row by row
+     * in background in order to improve performance
+     */
+    private class FractalWorker extends SwingWorker<Object, Object> {
+
+        private int y;
+
+        private int remaining;
+
+        private int[] colors;
+
+        public FractalWorker(int y, int remaining) {
+            this.y = y;
+            this.remaining = remaining;
+        }
+
+        @Override
+        protected void done() {
+            super.done();
+            for (int x = 0; x < colors.length; x++) {
+                display.getImage().setRGB(x, y, colors[x]);
+            }
+            display.repaint(0, y, displaySize, 1);
+            if (remaining == 1) enableUI(true);
+        }
+
+        @Override
+        protected Object doInBackground() {
+
+            colors = new int[displaySize];
+            double yCoord = FractalGenerator.getCoord(complexArea.y, complexArea.y + complexArea.height,
+                    displaySize, y);
+            for (int x = 0; x < displaySize; x++) {
+                double xCoord = FractalGenerator.getCoord(complexArea.x, complexArea.x + complexArea.width,
+                        displaySize, x);
+                colors[x] = generator.numIterations(xCoord, yCoord);
+            }
+            return null;
+        }
+
+    }
+
+    /**
+     * Action listener responsible for
      * reset and save buttons events
      */
     private class ButtonListener implements ActionListener {
@@ -151,17 +205,11 @@ public class FractalExplorer {
      */
     private void drawFractal() {
 
-        for (int x = 0; x < displaySize; x++) {
-            double xCoord = FractalGenerator.getCoord(complexArea.x, complexArea.x + complexArea.width,
-                    displaySize, x);
-            for (int y = 0; y < displaySize; y++) {
-                double yCoord = FractalGenerator.getCoord(complexArea.y, complexArea.y + complexArea.height,
-                        displaySize, y);
-                int color = generator.numIterations(xCoord, yCoord);
-                display.drawPixel(x, y, color);
-            }
+        enableUI(false);
+        for (int y = 0; y < displaySize; y++) {
+            FractalWorker worker = new FractalWorker(y, displaySize - y);
+            worker.execute();
         }
-        display.repaint();
     }
 
 }

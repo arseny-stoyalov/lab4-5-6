@@ -15,7 +15,6 @@ public class BurningShipGenerator extends FractalGenerator {
 
     @Override
     public void getInitialRange(Rectangle2D.Double range) {
-        //TODO Change if necessary
         range.x = -2;
         range.y = -2.5;
         range.width = range.height = 4;

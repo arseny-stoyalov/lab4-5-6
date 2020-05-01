@@ -45,4 +45,8 @@ public class JImageDisplay extends JComponent {
         image.setRGB(x, y, rgbColor);
     }
 
+    public BufferedImage getImage() {
+        return image;
+    }
+
 }

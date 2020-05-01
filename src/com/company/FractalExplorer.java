@@ -1,12 +1,22 @@
 package com.company;
 
+import com.company.fractal.BurningShipGenerator;
 import com.company.fractal.FractalGenerator;
 import com.company.fractal.MandelbrotGenerator;
+import com.company.fractal.TricornGenerator;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * This class is responsible of creating GUI
@@ -25,6 +35,8 @@ public class FractalExplorer {
 
     private Rectangle2D.Double complexArea;
 
+    private JFrame frame;
+
     public FractalExplorer(int displaySize) {
         this.displaySize = displaySize;
         this.generator = new MandelbrotGenerator();
@@ -37,16 +49,41 @@ public class FractalExplorer {
      */
     public void createView() {
 
-        JFrame frame = new JFrame("Fractals");
+        frame = new JFrame("Fractals");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        JPanel top = new JPanel();
+        JLabel lblFractal = new JLabel("Fractal:");
+        JComboBox<FractalGenerator> comboBox = new JComboBox<>();
+        top.add(lblFractal);
+        top.add(comboBox);
+        JPanel bottom = new JPanel();
+        JButton btnReset = new JButton("Reset display");
+        JButton btnSave = new JButton("Save image");
+        bottom.add(btnSave);
+        bottom.add(btnReset);
         display = new JImageDisplay(displaySize, displaySize);
-        JButton button = new JButton("Reset");
+
+        frame.add(top, BorderLayout.NORTH);
         frame.add(display, BorderLayout.CENTER);
-        frame.add(button, BorderLayout.SOUTH);
+        frame.add(bottom, BorderLayout.SOUTH);
         frame.addMouseListener(new MouseClickListener());
 
-        button.addActionListener(new ResetButtonListener());
+        btnReset.setActionCommand("reset");
+        btnSave.setActionCommand("save");
+        ActionListener btnListener = new ButtonListener();
+        btnReset.addActionListener(btnListener);
+        btnSave.addActionListener(btnListener);
+
+        comboBox.addItem(generator);
+        comboBox.addItem(new TricornGenerator());
+        comboBox.addItem(new BurningShipGenerator());
+        comboBox.addActionListener((e) -> {
+            generator = (FractalGenerator) comboBox.getSelectedItem();
+            if (generator != null)
+                generator.getInitialRange(complexArea);
+            drawFractal();
+        });
 
         frame.pack();
         frame.setVisible(true);
@@ -57,14 +94,36 @@ public class FractalExplorer {
     }
 
     /**
-     * Reset image scale to the initial value
+     * Event listener responsible for
+     * reset and save buttons events
      */
-    private class ResetButtonListener implements ActionListener {
+    private class ButtonListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            generator.getInitialRange(complexArea);
-            drawFractal();
+            switch (e.getActionCommand()) {
+                case "reset":
+                    generator.getInitialRange(complexArea);
+                    drawFractal();
+                    break;
+                case "save":
+                    JFileChooser fileChooser = new JFileChooser();
+                    FileFilter filter = new FileNameExtensionFilter("PNG Images", "pgn");
+                    fileChooser.setFileFilter(filter);
+                    fileChooser.setAcceptAllFileFilterUsed(false);
+                    int res = fileChooser.showDialog(frame, "Save");
+                    if (res == JFileChooser.APPROVE_OPTION) {
+                        File file = fileChooser.getSelectedFile();
+                        try {
+                            ImageIO.write(display.getImage(), "png", file);
+                        } catch (IOException ex) {
+                            System.out.println("Had problems with saving fractal image");
+                            JOptionPane.showMessageDialog(frame, "Could not save image",
+                                    "ERROR", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                    break;
+            }
         }
 
     }

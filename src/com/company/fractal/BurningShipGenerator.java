@@ -5,19 +5,20 @@ import java.awt.geom.Rectangle2D;
 
 /**
  * This class represents a generator of
- * Mandelbrot fractal
+ * Burning Ship fractal
  *
  * @author Stoyalov Arseny BVT1803
  */
-public class MandelbrotGenerator extends FractalGenerator {
+public class BurningShipGenerator extends FractalGenerator {
 
-    public static final int MAX_ITERATIONS = 2000;
+    private static final int MAX_ITERATIONS = 2000;
 
     @Override
     public void getInitialRange(Rectangle2D.Double range) {
+        //TODO Change if necessary
         range.x = -2;
-        range.y = -1.5;
-        range.width = range.height = 3;
+        range.y = -2.5;
+        range.width = range.height = 4;
     }
 
     /**
@@ -38,19 +39,18 @@ public class MandelbrotGenerator extends FractalGenerator {
 
         for (int i = 0; i < MAX_ITERATIONS; i++) {
             double nx = x * x - y * y + cx;
-            double ny = 2 * x * y + cy;
+            double ny = Math.abs(2 * x * y) + cy;
             x = nx;
             y = ny;
             if (x * x + y * y > 4)
-                return Color.HSBtoRGB(0.7f + (float) i / MAX_ITERATIONS * 3, 1f, 3);
+                return Color.HSBtoRGB(0.7f + (float) i / MAX_ITERATIONS * 7, 1f, 3f);
         }
-
         return 0;
     }
 
     @Override
     public String toString() {
-        return "Mandelbrot";
+        return "Burning ship";
     }
 
 }

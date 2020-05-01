@@ -5,19 +5,20 @@ import java.awt.geom.Rectangle2D;
 
 /**
  * This class represents a generator of
- * Mandelbrot fractal
+ * Tricorn fractal
  *
  * @author Stoyalov Arseny BVT1803
  */
-public class MandelbrotGenerator extends FractalGenerator {
+public class TricornGenerator extends FractalGenerator {
 
-    public static final int MAX_ITERATIONS = 2000;
+    private static final int MAX_ITERATIONS = 2000;
 
     @Override
     public void getInitialRange(Rectangle2D.Double range) {
+        //TODO Change if necessary
         range.x = -2;
-        range.y = -1.5;
-        range.width = range.height = 3;
+        range.y = -2;
+        range.width = range.height = 4;
     }
 
     /**
@@ -38,7 +39,7 @@ public class MandelbrotGenerator extends FractalGenerator {
 
         for (int i = 0; i < MAX_ITERATIONS; i++) {
             double nx = x * x - y * y + cx;
-            double ny = 2 * x * y + cy;
+            double ny = cy - 2 * x * y;
             x = nx;
             y = ny;
             if (x * x + y * y > 4)
@@ -50,7 +51,7 @@ public class MandelbrotGenerator extends FractalGenerator {
 
     @Override
     public String toString() {
-        return "Mandelbrot";
+        return "Tricorn";
     }
 
 }

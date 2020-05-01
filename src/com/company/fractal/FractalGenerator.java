@@ -17,12 +17,10 @@ public abstract class FractalGenerator {
      *
      * @param rangeMin the minimum value of the floating-point range
      * @param rangeMax the maximum value of the floating-point range
-     *
-     * @param size the size of the dimension that the pixel coordinate is from.
-     *        For example, this might be the image width, or the image height.
-     *
-     * @param coord the coordinate to compute the double-precision value for.
-     *        The coordinate should fall in the range [0, size].
+     * @param size     the size of the dimension that the pixel coordinate is from.
+     *                 For example, this might be the image width, or the image height.
+     * @param coord    the coordinate to compute the double-precision value for.
+     *                 The coordinate should fall in the range [0, size].
      */
     public static double getCoord(double rangeMin, double rangeMax,
                                   int size, int coord) {

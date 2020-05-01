@@ -12,6 +12,7 @@ import java.awt.geom.Rectangle2D;
  * This class is responsible of creating GUI
  * that shows Mandelbrot fractal and lets user
  * zoom it or reset to the initial scale
+ *
  * @author Stoyalov Arseny BVT1803
  */
 public class FractalExplorer {

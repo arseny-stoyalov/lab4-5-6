@@ -6,6 +6,7 @@ import java.awt.geom.Rectangle2D;
 /**
  * This class represents a generator of
  * fractals of Mandelbrot set
+ *
  * @author Stoyalov Arseny BVT1803
  */
 public class MandelbrotGenerator extends FractalGenerator {
@@ -41,7 +42,7 @@ public class MandelbrotGenerator extends FractalGenerator {
             x = nx;
             y = ny;
             if (x * x + y * y > 4)
-                return Color.HSBtoRGB(0.7f + (float) i / MAX_ITERATIONS * 3 , 1f, 3);
+                return Color.HSBtoRGB(0.7f + (float) i / MAX_ITERATIONS * 3, 1f, 3);
         }
 
         return 0;

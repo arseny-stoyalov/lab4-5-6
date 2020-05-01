@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 /**
  * This class represents and image component
  * that can be redrawn by changing it's pixels
+ *
  * @author Stoyalov Arseny BVT1803
  */
 public class JImageDisplay extends JComponent {
@@ -29,7 +30,7 @@ public class JImageDisplay extends JComponent {
      * Clears image by setting all pixels
      * black
      */
-    public void clearImage(){
+    public void clearImage() {
         for (int x = 0; x < image.getWidth(); x++) {
             for (int y = 0; y < image.getHeight(); y++) {
                 image.setRGB(x, y, 0);
@@ -40,7 +41,7 @@ public class JImageDisplay extends JComponent {
     /**
      * Sets color to a certain pixel
      */
-    public void drawPixel(int x, int y, int rgbColor){
+    public void drawPixel(int x, int y, int rgbColor) {
         image.setRGB(x, y, rgbColor);
     }
 
